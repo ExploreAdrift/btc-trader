@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.env
+.env.*
+*.pem
+*.key
+kalshi_credentials*
+.DS_Store
+data/
+.venv/
+venv/
+*.egg-info/
+.vscode/
+.idea/
+logs/
+*.log
+.claude/settings.local.json

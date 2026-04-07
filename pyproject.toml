@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "btc-trader"
+version = "0.1.0"
+description = "BTC 15-minute Kalshi binary contract trader"
+requires-python = ">=3.11"
+dependencies = [
+    "requests",
+    "requests-cache",
+]
+
+[project.scripts]
+btc-trader = "btc_trader.auto_trader_btc:main"
