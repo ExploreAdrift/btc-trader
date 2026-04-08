@@ -27,7 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from weather_market.kalshi.client import KalshiClient
+from btc_trader.kalshi.client import KalshiClient
 
 from btc_trader.binance       import PriceFeed
 from btc_trader.kalshi_btc    import (

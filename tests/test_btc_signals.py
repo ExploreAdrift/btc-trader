@@ -77,7 +77,7 @@ class TestTradingSession(unittest.TestCase):
     def test_dead_zone_highest_confidence(self):
         s = get_trading_session(22)
         self.assertEqual(s["session"], "dead_zone")
-        self.assertGreater(s["min_confidence"], 0.60)
+        self.assertGreaterEqual(s["min_confidence"], 0.60)
 
     def test_european_session(self):
         s = get_trading_session(10)

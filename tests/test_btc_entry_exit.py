@@ -2,12 +2,12 @@ import unittest
 from btc_trader.entry_exit import should_enter, take_profit_target, stop_loss_target, should_exit
 
 class TestEntryGate(unittest.TestCase):
-    def test_rejects_above_30(self):
-        ok, _ = should_enter(35, 10, 600)
+    def test_rejects_above_45(self):
+        ok, _ = should_enter(50, 10, 600)
         self.assertFalse(ok)
 
-    def test_accepts_at_30(self):
-        ok, _ = should_enter(30, 10, 600)
+    def test_accepts_at_45(self):
+        ok, _ = should_enter(45, 10, 600)
         self.assertTrue(ok)
 
     def test_rejects_wide_spread(self):

@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from weather_market.kalshi.client import KalshiClient
+from btc_trader.kalshi.client import KalshiClient
 
 # ── Kalshi KXBTC15M series ────────────────────────────────────────────────────
 _SERIES        = "KXBTC15M"

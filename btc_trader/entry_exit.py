@@ -1,6 +1,6 @@
 """Tiered entry/exit rules for BTC 15-minute contracts.
 
-Entry cap: 30c (wins cluster at 22-29c, losses at 50-60c)
+Entry cap: 45c (loosened from 30c — confidence scoring + stop-loss protect against bad entries)
 Take-profit: tiered by entry price, universal ceiling at 50c
 Stop-loss: tiered by entry price
 Time-based exits: progressive based on hold duration and P&L
@@ -10,7 +10,7 @@ Underwater exits: immediate exit on large adverse moves
 from __future__ import annotations
 
 # ── Entry Rules ────────────────────────────────────────
-MAX_ENTRY_PRICE = 30    # Never buy above 30c
+MAX_ENTRY_PRICE = 45    # Never buy above 45c
 MIN_TIME_REMAINING = 300  # 5 minutes minimum in window
 MAX_SPREAD = 15         # Don't trade if spread > 15c
 
@@ -20,7 +20,8 @@ CEILING = 50            # Never hold above 50c — market says coin flip
 # ── Stop-Loss Tiers ───────────────────────────────────
 LOTTERY_MAX = 10        # 1-10c = lottery tier
 VALUE_MAX = 20          # 11-20c = value tier
-# 21-30c = moderate tier
+MODERATE_MAX = 30       # 21-30c = moderate tier
+# 31-45c = expensive tier
 
 # ── Time Rules ─────────────────────────────────────────
 PROFIT_TIME_SEC = 480       # 8 min: exit if profit > 5c
@@ -54,8 +55,11 @@ def take_profit_target(entry_price: int) -> int:
         return min(entry_price * 3, CEILING)
     elif entry_price <= VALUE_MAX:
         return min(entry_price * 2, CEILING)
-    else:
+    elif entry_price <= MODERATE_MAX:
         return min(entry_price + 15, CEILING)
+    else:
+        # Expensive tier (31-45c): take 10c profit, tight because entry is high
+        return min(entry_price + 10, CEILING)
 
 
 def stop_loss_target(entry_price: int) -> int | None:
@@ -64,8 +68,11 @@ def stop_loss_target(entry_price: int) -> int | None:
         return None  # Max loss is 10c, not worth stopping
     elif entry_price <= VALUE_MAX:
         return max(1, entry_price // 2)  # 50% of entry
-    else:
+    elif entry_price <= MODERATE_MAX:
         return max(1, entry_price - 10)  # Fixed 10c risk
+    else:
+        # Expensive tier (31-45c): tight 8c stop — protect capital
+        return max(1, entry_price - 8)
 
 
 def should_exit(

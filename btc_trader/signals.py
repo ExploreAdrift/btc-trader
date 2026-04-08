@@ -139,7 +139,7 @@ def get_trading_session(hour_utc: int) -> dict:
     elif 13 <= hour_utc < 21:
         return {"session": "us", "vol_multiplier": 1.0, "min_confidence": 0.50}
     else:
-        return {"session": "dead_zone", "vol_multiplier": 0.6, "min_confidence": 0.70}
+        return {"session": "dead_zone", "vol_multiplier": 0.6, "min_confidence": 0.60}
 
 
 def compute_signal_confidence(
