@@ -158,16 +158,33 @@ def _open_position(
             )
             fill = ask
 
-        # If nothing filled, don't enter the hold loop
+        # If nothing filled yet, wait up to 5 seconds for the fill
         if actual_count == 0 and order_status == "resting":
-            log.warning(f"Order resting (0 filled) — cancelling")
+            import time as _time
             oid = result.get("order_id") or result.get("id")
-            if oid:
+            for _wait in range(5):
+                _time.sleep(1)
                 try:
-                    cancel_resting_orders(client, contract.ticker)
+                    updated = client.get_order(oid)
+                    fill_count_raw = updated.get("fill_count_fp") or updated.get("fill_count")
+                    actual_count = int(float(fill_count_raw)) if fill_count_raw else 0
+                    order_status = updated.get("status", "unknown")
+                    if actual_count > 0:
+                        fill = _parse_fill_cents(updated, ask, bearish=bearish)
+                        count = actual_count
+                        log.info(f"Order filled after {_wait+1}s: {actual_count} contracts at {fill}¢")
+                        break
                 except Exception:
                     pass
-            return None
+            else:
+                # Still no fill after 5 seconds — cancel
+                log.warning(f"Order resting (0 filled after 5s) — cancelling")
+                if oid:
+                    try:
+                        cancel_resting_orders(client, contract.ticker)
+                    except Exception:
+                        pass
+                return None
 
         # Use actual fill count if available, otherwise assume full fill
         if actual_count > 0:
