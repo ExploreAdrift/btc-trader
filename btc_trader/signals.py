@@ -34,7 +34,7 @@ from .binance import (
 )
 
 # ── tuneable parameters ───────────────────────────────────────────────────────
-MAX_ENTRY_CENTS      = 40    # max entry — wins cluster at 22-29¢, losses at 50-60¢
+MAX_ENTRY_CENTS      = 45    # max entry — aligned with entry_exit.py cap
 MAX_SPREAD_CENTS     = 30    # skip if bid-ask spread is wider than this
 MIN_SECONDS_LEFT     = 300   # 5 minutes — no late entries
 MOMENTUM_LOOKBACK    = 60.0  # seconds of BTC price history to consider
